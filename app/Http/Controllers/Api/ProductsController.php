@@ -21,7 +21,7 @@ class ProductsController extends Controller
      */
     public function index()
     {
-        $products = Product::with('category','product_images')->get();
+        $products = Product::with('category','product_images','product_image','brand')->get();
         return response()->json($products);
     }
 
@@ -46,20 +46,6 @@ class ProductsController extends Controller
         
 
 
-              
-        // dd($request->product_name);
-      
-
-        //dd($test);
-        // $data=$request->all();
-        // dd($data['images']);
-
-        
-            //dd('test');
-
-
-
-
             $data = array();
     	$data['product_name'] = $request->product_name;
     	$data['product_code'] = $request->product_code;
@@ -81,11 +67,6 @@ class ProductsController extends Controller
             //dd($images);
 
             $odata = array();
-
-
-
-           
-
 
           foreach($images as $image){
              //dd($image);
@@ -140,51 +121,7 @@ class ProductsController extends Controller
             
         }
 
-        
-        
-
-
-        //return response('Done');
-
-        //   $product =   Product::create([
-
-                
-        //         'product_name' => $request->product_name,
-        //         'product_code' => $request->product_code,
-        //         'category_id'=> $request->category_id,
-        //         'sub_category_id' => $request->sub_category_id,
-        //         'brand_id' => $request->brand_id,
-                
-        //         'quantity' => $request->quantity,
-                
-        //         'sub_sub_category_id' => $request->sub_sub_category_id,
-        //         'product_size' => $request->product_size,
-        //         'product_color' => $request->product_color,
-               
-        //         'selling_price' => $request->selling_price,
-        //         'discount_price' => $request->discount_price,
-        //         'video_link' => $request->video_link,
-        //         'main_slider' => $request->main_slider,
-        //         'hot_deal' => $request->hot_deal,
-        //         'best_rated' => $request->best_rated,
-        //         'trend' => $request->trend,
-        //         'hot_new' => $request->hot_new,
-        //         'buy_one_get_one' => $request->buy_one_get_one,
-
-        //     ]);
-          
-            //    $images = $request->images;
-            //    dd($images);
-         
-          
-         // $images = array();
-         
-          
-           
-       
-
-
-        
+     
        
     }
 
@@ -196,7 +133,8 @@ class ProductsController extends Controller
      */
     public function show($id)
     {
-        //
+        $product = Product::with('product_images','category','sub_category','sub_sub_category','brand')->findOrFail($id);
+        return response()->json($product);
     }
 
     /**
@@ -219,7 +157,81 @@ class ProductsController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        
+      
+        $image = $request->image;
+        //dd($request->newimage);
+        if($image){
+
+            
+
+            $data = array();
+            $data['product_name'] = $request->product_name;
+            $data['product_code'] = $request->product_code;
+            $data['category_id'] = $request->category_id;
+            $data['brand_id'] = $request->brand_id;
+            $data['sub_category_id'] = $request->sub_category_id;
+            $data['product_size'] = $request->product_size;
+            $data['product_color'] = $request->product_color;
+            $data['sub_sub_category_id'] = $request->sub_sub_category_id;
+            $data['selling_price'] = $request->selling_price;
+            $data['discount_price'] = $request->discount_price;
+            $data['video_link'] = $request->video_link;
+            
+            DB::table('products')->where('id',$id)->update($data);
+            
+            $odata = array();
+            
+            $pro_image = DB::table('product_images')->where('product_id',$id)->get();
+            
+            foreach($pro_image as $img){
+                unlink($img);
+            }
+            
+            DB::table('product_images')->where('product_id',$id)->delete();
+            
+            
+            
+            foreach($images as $image){
+              
+             $folderPath = "backend/products/";
+            
+             $image_parts = explode(";base64,", $image);
+             $image_type_aux = explode("/", $image_parts[0]);
+             $image_type = $image_type_aux[1];
+             $image_base64 = base64_decode($image_parts[1]);
+             $file = $folderPath . uniqid() . '. '.$image_type;
+            
+             file_put_contents($file, $image_base64);
+            
+            
+            
+            $odata['image'] = $file;
+            $odata['product_id'] = $id;
+            DB::table('product_images')->insert($odata); 
+            
+            } 
+            
+            } else {
+            $data = array();
+            $data['product_name'] = $request->product_name;
+            $data['product_code'] = $request->product_code;
+            $data['category_id'] = $request->category_id;
+            $data['brand_id'] = $request->brand_id;
+            $data['sub_category_id'] = $request->sub_category_id;
+            $data['product_size'] = $request->product_size;
+            $data['product_color'] = $request->product_color;
+            $data['sub_sub_category_id'] = $request->sub_sub_category_id;
+            $data['selling_price'] = $request->selling_price;
+            $data['discount_price'] = $request->discount_price;
+            $data['video_link'] = $request->video_link;
+           // dd($data);
+            DB::table('products')->where('id',$id)->update($data);
+        }
+         
+
+
+
     }
 
     /**
@@ -230,6 +242,12 @@ class ProductsController extends Controller
      */
     public function destroy($id)
     {
-        //
+        Product::where('id',$id)->delete();
+        
+    }
+
+    public function productImage($id){
+        $productimage = ProductImage::where('product_id',$id)->get();
+        return response()->json($productimage);
     }
 }

@@ -34,3 +34,4 @@ Route::get('/category/subcategory/ajax/{id}',[App\Http\Controllers\Api\Sub_SubCa
 // product
 Route::apiResource('/product', App\Http\Controllers\Api\ProductsController::class);
 Route::get('/subcategory/sub-sub-category/{sub_categoryid}/{category_id}',[App\Http\Controllers\Api\ProductController::class, 'fetchData']);
+Route::get('/product/image/{id}',[App\Http\Controllers\Api\ProductsController::class, 'productImage']);

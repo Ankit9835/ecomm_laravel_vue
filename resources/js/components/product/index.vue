@@ -16,25 +16,31 @@
                     <thead class="thead-light">
                       <tr>
                          <th>Sr. No</th>
+                          <th>Product Code</th>
+                          <th>Image</th>
                         <th>Product Name</th>
-                        <th>Product Code</th>
+                       
                         <th>Category Name</th>
                         <th>Brand Name</th>
-                        <th>Image</th>
+                       
                         <th>Action</th>
                       </tr>
                     </thead>
                     <tbody>
                       <tr v-for = "(product, index) in filterSearch" :key="product.id">
                         <td> {{ index + 1 }}  </td>
+                         <td><strong>{{ product.product_code }}</strong></td>  
+                         <td> <img :src="product.product_image.image" id="em_photo">  </td>
                         <td><strong>{{ product.product_name }}</strong></td>
-                        <td><strong>{{ product.product_code }}</strong></td>                
+                                     
                         <td><strong>{{ product.category.category_name }}</strong></td>
-                        
+                         <td><strong>{{ product.brand.name }}</strong></td>
                          
-                        <td><router-link :to="{name: 'edit-product', params:{id:product.id}}" class="btn btn-sm btn-primary"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></router-link>
-                       &nbsp;
-                        <a @click = "deleteCategory(category.id)" class="btn btn-sm btn-danger"><i class="fas fa-trash-alt text-white"></i></a> 
+                        <td width = "200">
+                          <router-link :to="{name: 'view-product', params:{id:product.id}}" class="btn btn-sm btn-warning"><i class="fa fa-eye" aria-hidden="true"></i></router-link>
+                          <router-link :to="{name: 'edit-product', params:{id:product.id}}" class="btn btn-sm btn-primary"><i class="fa fa-edit" aria-hidden="true"></i></router-link>
+                          <a @click = "deleteProduct(product.id)" class="btn btn-sm btn-danger"><i class="fas fa-trash-alt text-white"></i></a> 
+                         
                         </td>
                       </tr>
                      
@@ -101,7 +107,7 @@
         .catch()
       },
 
-      deleteCategory(id){
+      deleteProduct(id){
        Swal.fire({
           title: 'Are you sure?',
           text: "You won't be able to revert this!",
@@ -112,14 +118,14 @@
           confirmButtonText: 'Yes, delete it!'
         }).then((result) => {
           if (result.value) {
-             axios.delete('/api/category/'+id)
+             axios.delete('/api/product/'+id)
                .then(() => {
-                this.categories = this.categories.filter(category => {
-                  return category.id != id
+                this.products = this.products.filter(product => {
+                  return product.id != id
                 })
                })
                .catch(() => {
-                this.$router.push({name: 'category'})
+                this.$router.push({name: 'product'})
                })
             Swal.fire(
               'Deleted!',
@@ -145,6 +151,9 @@
 
 <style type="text/css">
 	
-  
+  #em_photo {
+    height: 60px;
+    width: 60px;
+}
 
 </style>

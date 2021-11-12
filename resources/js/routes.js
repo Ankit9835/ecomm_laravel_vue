@@ -25,6 +25,8 @@ let editbrand = require("./components/brand/edit.vue").default;
 // product component
 let productcreate = require("./components/product/create.vue").default;
 let product = require("./components/product/index.vue").default;
+let productview = require("./components/product/view.vue").default;
+let productedit = require("./components/product/edit.vue").default;
 
 
 
@@ -67,16 +69,18 @@ export const routes = [
         name: "subsubcategory"
     },
     {
-        path: "/edit-sub-sub-category",
+        path: "/edit-sub-sub-category/:id",
         component: editsubsubcategory,
         name: "editsubsubcategory"
     },
 
     // brand module
     { path: "/brand", component: brand, name: "brand" },
-    { path: "/edit-brand", component: editbrand, name: "edit-brand" },
+    { path: "/edit-brand/:id", component: editbrand, name: "edit-brand" },
 
     // product module
     { path: "/create-product", component: productcreate, name: "productcreate" },
+    { path: "/view-product/:id", component: productview, name: "view-product" },
+    { path: "/edit-product/:id", component: productedit, name: "edit-product" },
     { path: "/product", component: product, name: "product" },
 ];

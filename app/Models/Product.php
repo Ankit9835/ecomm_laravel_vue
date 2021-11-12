@@ -16,7 +16,23 @@ class Product extends Model
         return $this->hasMany('App\Models\ProductImage');
     }
 
+    public function product_image(){
+        return $this->hasOne('App\Models\ProductImage');
+    }
+
     public function category(){
         return $this->belongsTo('App\Models\Category');
+    }
+
+    public function brand(){
+        return $this->belongsTo('App\Models\Brand');
+    }
+
+    public function sub_category(){
+        return $this->belongsTo('App\Models\SubCategory');
+    }
+
+    public function sub_sub_category(){
+        return $this->belongsTo('App\Models\SubSubCategory');
     }
 }
